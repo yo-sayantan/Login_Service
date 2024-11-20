@@ -1,0 +1,36 @@
+2024-11-20 05:28:58 [INFO ] [main] [org.springframework.boot.StartupInfoLogger] - Starting loginServiceApplication using Java 21.0.3 with PID 10516 (D:\GitHub\loginServiceApp\target\classes started by sayan in D:\GitHub\loginServiceApp)
+2024-11-20 05:28:58 [INFO ] [main] [org.springframework.boot.SpringApplication] - No active profile set, falling back to 1 default profile: "default"
+2024-11-20 05:28:58 [WARN ] [main] [org.springframework.context.support.AbstractApplicationContext] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2024-11-20 05:28:58 [ERROR] [main] [org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web application could not be started as there was no org.springframework.boot.web.servlet.server.ServletWebServerFactory bean defined in the context.
+
+Action:
+
+Check your application's dependencies for a supported servlet web server.
+Check the configured web application type.
+
+2024-11-20 05:29:36 [INFO ] [main] [org.springframework.boot.StartupInfoLogger] - Starting loginServiceApplication using Java 21.0.3 with PID 43532 (D:\GitHub\loginServiceApp\target\classes started by sayan in D:\GitHub\loginServiceApp)
+2024-11-20 05:29:36 [INFO ] [main] [org.springframework.boot.SpringApplication] - No active profile set, falling back to 1 default profile: "default"
+2024-11-20 05:29:36 [WARN ] [main] [org.springframework.context.support.AbstractApplicationContext] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2024-11-20 05:29:36 [ERROR] [main] [org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web application could not be started as there was no org.springframework.boot.web.servlet.server.ServletWebServerFactory bean defined in the context.
+
+Action:
+
+Check your application's dependencies for a supported servlet web server.
+Check the configured web application type.
+
