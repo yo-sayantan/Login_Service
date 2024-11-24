@@ -1,15 +1,14 @@
 package com.orderingApp.auth.util;
 
+import java.util.Date;
+import java.util.function.Function;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.Claims;
-import org.springframework.stereotype.Component;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @SuppressWarnings("deprecation")
@@ -18,47 +17,48 @@ public class JwtUtil {
     private final String SECRET_KEY = "MySuperSecretKeyForHS256AlgorithmSayantanBiswas"; 
     private final long EXPIRATION_TIME = 1000 * 60 * 30;
 
-    private final Key secretKey;
-
     public JwtUtil() {
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
     
-	private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
-    }
-	
-	public String generateToken(String username) {
-		return Jwts.builder()
-//				.setClaims(claims)
+    public String generateToken(String username) {
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
-    
-    public boolean validateToken(String token) {
+
+    public boolean validateToken(String token, String username) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            return true;
+            String tokenUsername = extractUsername(token);
+            return username.equals(tokenUsername) && !isTokenExpired(token);
         } catch (Exception e) {
+            System.out.println("Invalid token: " + e.getMessage());
             return false;
         }
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
+        return extractClaim(token, Claims::getSubject);
     }
 
-    public boolean isTokenValid(String token, String username) {
-        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private boolean isTokenExpired(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration().before(new Date());
+        Date expirationDate = extractClaim(token, Claims::getExpiration);
+        return expirationDate.before(new Date());
     }
 }

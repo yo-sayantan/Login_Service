@@ -2,7 +2,6 @@ package com.orderingApp.auth.util;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userService.loadUserByUsername(username);
 
-                if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) {
+                if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

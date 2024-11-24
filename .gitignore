@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+application.log.2024-11-22.0.gz
+*.tar
+*.log
+*.log

@@ -2,17 +2,16 @@ package com.orderingApp.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orderingApp.auth.entity.Users;
@@ -55,7 +54,7 @@ public class AuthController {
     	
     	if(response.equals("SUCCESS"))
     		return ResponseEntity.ok("User is registered successfully");
-    	return ResponseEntity.badRequest().body(response);
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
     
     @PostMapping("/login")
@@ -66,8 +65,24 @@ public class AuthController {
             String token = jwtUtil.generateToken(authRequest.getUsername());
             return ResponseEntity.ok(new AuthResponse(token));
         } else {
-        	return ResponseEntity.badRequest().body("Invalid credentials");
+        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+    
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateToken(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            try {
+                String username = jwtUtil.extractUsername(token);
+                if (jwtUtil.validateToken(token, username))
+                    return ResponseEntity.ok("Token is valid for user: " + username);
+                
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token: " + e.getMessage());
+            }
+        }
+        return ResponseEntity.badRequest().body("Authorization header is missing or invalid");
     }
     
     @Autowired
