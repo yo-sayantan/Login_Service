@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.orderingApp.auth.entity.User;
+import com.orderingApp.auth.entity.Users;
 import com.orderingApp.auth.service.AuthRequest;
 import com.orderingApp.auth.service.AuthResponse;
 import com.orderingApp.auth.service.UserService;
@@ -39,18 +39,32 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody Users user) {
         String encodedPassword = (user.getPassword());
         user.setPassword(encodedPassword);
         userService.saveUser(user);
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok("Users registered successfully");
     }
     
     @PostMapping("/signup")
-    public ResponseEntity<?> signupUser(@RequestBody User user) {
-        userService.registerUser(user);
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<?> signupUser(@RequestBody AuthRequest signupRequest) {
+    	Users user = new Users();
+        user.setUsername(signupRequest.getUsername());
+        user.setPassword(signupRequest.getPassword());
+        
+        if (signupRequest.getRoles() == null || signupRequest.getRoles().isEmpty())
+            return ResponseEntity.badRequest().body("Roles cannot be null or empty.");
+        
+        if (signupRequest.getEmail() == null || signupRequest.getEmail().isEmpty())
+        	return ResponseEntity.badRequest().body("Email cannot be null or empty.");
+        
+        user.setEmail(signupRequest.getEmail());
+    	String response = userService.registerUser(user, signupRequest.getRoles());
+    	
+    	if(response.equals("SUCCESS"))
+    		return ResponseEntity.ok("Users registered successfully");
+    	return ResponseEntity.badRequest().body(response);
     }
     
     @PostMapping("/login")
@@ -61,22 +75,9 @@ public class AuthController {
             String token = jwtUtil.generateToken(authRequest.getUsername());
             return ResponseEntity.ok(new AuthResponse(token));
         } else {
-            throw new RuntimeException("Invalid credentials");
+        	return ResponseEntity.badRequest().body("Invalid credentials");
         }
     }
-
-//    @SuppressWarnings("deprecation")
-//	@PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-//        User user = userService.findByUsername(username);
-//
-//        if (user != null)
-//        	if(!StringUtils.isEmpty(user.getUsername()) && !StringUtils.isEmpty(user.getPassword()))
-//        		if(userService.validatePassword(password, user.getPassword()))
-//        			return ResponseEntity.ok("Login successful for user: " + username);
-//        
-//        return ResponseEntity.ok("Wrong credentials");
-//    }
     
     @Autowired
     public AuthController(AuthenticationManager authenticationManager) {

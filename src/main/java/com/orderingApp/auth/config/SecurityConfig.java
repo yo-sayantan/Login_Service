@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.orderingApp.auth.service.CustomUserDetailsService;
 import com.orderingApp.auth.service.UserService;
 import com.orderingApp.auth.util.JwtAuthenticationFilter;
 
@@ -26,9 +27,16 @@ public class SecurityConfig {
 	@Autowired
 	@Lazy
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	@Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
 	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+	
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -39,38 +47,11 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-    
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//            	.authorizeHttpRequests(auth -> auth
-//                .requestMatchers("/api/auth/**").permitAll()
-//                .anyRequest().authenticated()
-//            )
-//            .httpBasic();
-//        return http.build();
-//    }
-    
-//	@Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//            .authorizeRequests()
-//            .requestMatchers("/login", "/register").permitAll() // Adjust as per your needs
-//            .anyRequest().authenticated() // Secure all other requests
-//            .and()
-//            .formLogin(); // Enable default form login
-//
-//        return http.build();
-//    }
 
-    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
@@ -88,9 +69,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-//    @Bean
-//    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-//        return new JwtAuthenticationFilter();
-//    }
 }

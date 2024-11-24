@@ -15,8 +15,8 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class JwtUtil {
 
-    private final String SECRET_KEY = "YourSuperSecretKeyForHS256Algorithm123!"; 
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
+    private final String SECRET_KEY = "MySuperSecretKeyForHS256AlgorithmSayantanBiswas"; 
+    private final long EXPIRATION_TIME = 1000 * 60 * 30;
 
     private final Key secretKey;
 
@@ -32,13 +32,9 @@ public class JwtUtil {
     }
 	
 	public String generateToken(String username) {
-        return Jwts.builder().setSubject(username).signWith(secretKey).compact();
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
+		return Jwts.builder()
+//				.setClaims(claims)
+                .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

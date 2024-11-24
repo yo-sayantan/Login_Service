@@ -5,12 +5,16 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.orderingApp.auth.entity.User;
+import com.orderingApp.auth.entity.Users;
 
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    Optional<User> findUserByUsername(String username);
+public interface UserRepository extends JpaRepository<Users, Integer> {
+    Optional<Users> findUserByUsername(String username);
     
-    User findByUsername(String username);
+    Users findByUsername(String username);
+    Users findByEmail(String email);
+    
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 }
