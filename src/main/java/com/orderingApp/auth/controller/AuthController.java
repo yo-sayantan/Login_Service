@@ -37,15 +37,6 @@ public class AuthController {
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody Users user) {
-        String encodedPassword = (user.getPassword());
-        user.setPassword(encodedPassword);
-        userService.saveUser(user);
-
-        return ResponseEntity.ok("Users registered successfully");
-    }
     
     @PostMapping("/signup")
     public ResponseEntity<?> signupUser(@RequestBody AuthRequest signupRequest) {
@@ -63,7 +54,7 @@ public class AuthController {
     	String response = userService.registerUser(user, signupRequest.getRoles());
     	
     	if(response.equals("SUCCESS"))
-    		return ResponseEntity.ok("Users registered successfully");
+    		return ResponseEntity.ok("User is registered successfully");
     	return ResponseEntity.badRequest().body(response);
     }
     
