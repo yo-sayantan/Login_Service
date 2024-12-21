@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService {
     	try {
     		user = userRepository.findByUsername(username);
         } catch (Exception e) {
-        	throw new UsernameNotFoundException("Users not found");
+        	throw new UsernameNotFoundException("User not found");
         }
         
     	return org.springframework.security.core.userdetails.User.builder()
