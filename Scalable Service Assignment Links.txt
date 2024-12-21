@@ -1,0 +1,16 @@
+GitHub Repos - 
+Authentication Service : https://github.com/yo-sayantan/loginServiceApp.git 
+Order Service :          https://github.com/PallaviK2301/orderingServiceApp.git 
+Order Place Service :    https://github.com/PallaviK2301/OrderPlaced.git
+
+
+DockerHub Containers - 
+MySQL :             yosayantan/mysql:8.0 
+LoginService :      yosayantan/loginserviceapp-app:latest 
+OrderingService :   pallavik7/orderingservice-app:latest 
+OrderPlaceService:  pallavik7/orderplaced-app:latest 
+
+
+Google Drive Links - https://drive.google.com/drive/folders/1GfJ1kAwan7rA2mnDDiE_RqePlE1S2FkB 
+Youtube - https://youtu.be/U-KMpsE4drQ (Authentication Deployment YouTube)
+          https://youtu.be/afx2Fk2ZztQ (LoginService and OrderingService YouTube)
